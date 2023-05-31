@@ -22,10 +22,10 @@ def main(params):
     global ITERATION
     ITERATION += 1
     params['ITERATION'] = ITERATION
-    json.dump(params, open(args.minist_with_params_path_box, 'w+', encoding="utf-8"), ensure_ascii=False)
-    sig = os.system("sh %s" % args.minist_subp_script)
+    json.dump(params, open(args.mnist_with_params_path_box, 'w+', encoding="utf-8"), ensure_ascii=False)
+    sig = os.system("sh %s" % args.mnist_subp_script)
     assert sig == 0
-    res = json.load(open(args.minist_out_box, 'r', encoding="utf-8"))
+    res = json.load(open(args.mnist_out_box, 'r', encoding="utf-8"))
     return res
 
 if __name__ == '__main__':
@@ -56,5 +56,5 @@ if __name__ == '__main__':
     json.dump({"best": best, "trials": bayes_trials.results},
               open(os.path.join(args.log_dir, "hy_best_params.json"), "w+", encoding="utf-8"),
               ensure_ascii=False)
-    os.remove(args.minist_with_params_path_box)
-    os.remove(args.minist_out_box)
+    os.remove(args.mnist_with_params_path_box)
+    os.remove(args.mnist_out_box)

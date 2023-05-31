@@ -10,14 +10,14 @@ parser.add_argument('--cifar_ablation_p', default=None, type=float)
 parser.add_argument('--cifar_ablation_newq', default=None, type=int)
 
 
-parser.add_argument('--minist_ablation_a', default=None, type=float)
-parser.add_argument('--minist_ablation_p', default=None, type=float)
-parser.add_argument('--minist_ablation_newq', default=None, type=int)
+parser.add_argument('--mnist_ablation_a', default=None, type=float)
+parser.add_argument('--mnist_ablation_p', default=None, type=float)
+parser.add_argument('--mnist_ablation_newq', default=None, type=int)
 
-parser.add_argument('--minist_subp_script', default=None, type=str)
-parser.add_argument('--minist_out_box', default=None, type=str)
-parser.add_argument('--minist_with_params_path_box', default=None, type=str)
-parser.add_argument('--minist_with_params_path', default=None, type=str)
+parser.add_argument('--mnist_subp_script', default=None, type=str)
+parser.add_argument('--mnist_out_box', default=None, type=str)
+parser.add_argument('--mnist_with_params_path_box', default=None, type=str)
+parser.add_argument('--mnist_with_params_path', default=None, type=str)
 
 parser.add_argument('--cifar_subp_script', default=None, type=str)
 parser.add_argument('--cifar_out_box', default=None, type=str)
@@ -29,14 +29,14 @@ parser.add_argument('--utkface_loss_type', type=str, default="ea_emak_tanh", cho
 parser.add_argument('--cifar_loss_type', type=str, default="ea_emak_tanh_newq",
                     choices=["ea_gak_tanh_newq", "ea_emak_tanh_newq", "ea_tanh_newq", "no_cl",
                              "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq","ea_emak_tanh_fixk_newq"])
-parser.add_argument('--minist_loss_type', type=str, default="no_cl",
+parser.add_argument('--mnist_loss_type', type=str, default="no_cl",
                     choices=["ea_gak_tanh_newq", "ea_emak_tanh_newq", "ea_tanh_newq", "no_cl",
                              "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq","ea_emak_tanh_fixk_newq"])
-# parser.add_argument('--minist_no_save', default=False, const=True, action='store_const')
+# parser.add_argument('--mnist_no_save', default=False, const=True, action='store_const')
 parser.add_argument('--log_dir', type=str)
 parser.add_argument('--save_dir', type=str)
-parser.add_argument('--dataset', default='MINIST', type=str,
-                    help="Model type selected in the list: [MINIST, CIFAR10, CIFAR100, UTKFACE]")
+parser.add_argument('--dataset', default='mnist', type=str,
+                    help="Model type selected in the list: [mnist, CIFAR10, CIFAR100, UTKFACE]")
 
 # dataset related
 # classification

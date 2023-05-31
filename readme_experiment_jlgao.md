@@ -1,41 +1,41 @@
-MINIST/nocl_lr1e-1_epo20_results/fract0.0       98.51±0.22
-MINIST/nocl_lr1e-1_epo20_results/fract0.20      98.28±0.53
-MINIST/nocl_lr1e-1_epo20_results/fract0.40      98.06±0.07
-MINIST/nocl_lr1e-1_epo20_results/fract0.60      97.36±0.16
-MINIST/nocl_lr1e-1_epo20_results/fract0.80      95.13±0.52
+MNIST/nocl_lr1e-1_epo20_results/fract0.0       98.51±0.22
+MNIST/nocl_lr1e-1_epo20_results/fract0.20      98.28±0.53
+MNIST/nocl_lr1e-1_epo20_results/fract0.40      98.06±0.07
+MNIST/nocl_lr1e-1_epo20_results/fract0.60      97.36±0.16
+MNIST/nocl_lr1e-1_epo20_results/fract0.80      95.13±0.52
 
-MINIST/superloss_lr1e-1_epo20_results/fract0.0  98.97±0.06
-MINIST/superloss_lr1e-1_epo20_results/fract0.20 98.87±0.05
-MINIST/superloss_lr1e-1_epo20_results/fract0.40 98.40±0.16
-MINIST/superloss_lr1e-1_epo20_results/fract0.60 97.69±0.14
-MINIST/superloss_lr1e-1_epo20_results/fract0.80 95.53±0.18
+MNIST/superloss_lr1e-1_epo20_results/fract0.0  98.97±0.06
+MNIST/superloss_lr1e-1_epo20_results/fract0.20 98.87±0.05
+MNIST/superloss_lr1e-1_epo20_results/fract0.40 98.40±0.16
+MNIST/superloss_lr1e-1_epo20_results/fract0.60 97.69±0.14
+MNIST/superloss_lr1e-1_epo20_results/fract0.80 95.53±0.18
 
 
-MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.0      99.08±0.03
+MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.0      99.08±0.03
 seed16 99.13
 seed8 99.08
 seed20 99.07
 seed13 99.05
 seed9 99.05
-MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.20     98.99±0.01
+MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.20     98.99±0.01
 seed13 99.01
 seed16 99.01
 seed18 98.99
 seed1 98.98
 seed8 98.98
-MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.40     98.64±0.01
+MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.40     98.64±0.01
 seed20 98.65
 seed8 98.65
 seed5 98.64
 seed13 98.62
 seed4 98.62
-MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.60     98.11±0.09
+MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.60     98.11±0.09
 seed8 98.28
 seed4 98.12
 seed11 98.1
 seed6 98.05
 seed10 98.02
-MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.80     96.15±0.16
+MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.80     96.15±0.16
 seed13 96.47
 seed16 96.1
 seed3 96.08
@@ -43,13 +43,13 @@ seed5 96.07
 seed19 96.02
 
 
-MINIST/box_ea_emak_tanh_wo_es_newq_lr1e-1_epo20/fract0.40       98.64±0.07
+MNIST/box_ea_emak_tanh_wo_es_newq_lr1e-1_epo20/fract0.40       98.64±0.07
 seed5 98.71
 seed8 98.68
 seed20 98.67
 seed13 98.61
 seed4 98.52
-MINIST/box_ea_emak_tanh_wo_ea_newq_lr1e-1_epo20/fract0.40       98.89±0.06
+MNIST/box_ea_emak_tanh_wo_ea_newq_lr1e-1_epo20/fract0.40       98.89±0.06
 seed20 98.95
 seed5 98.95
 seed13 98.91
@@ -57,11 +57,11 @@ seed8 98.83
 seed4 98.82
 
 
-1 MINIST/nocl_lr1e-1_epo20_results/fract0.20      98.28±0.53
-2 MINIST/superloss_lr1e-1_epo20_results/fract0.20 98.87±0.05
-3 MINIST/ea_emak_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.87
-4 MINIST/ea_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.89
-5 MINIST/ea_gak_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.84
+1 MNIST/nocl_lr1e-1_epo20_results/fract0.20      98.28±0.53
+2 MNIST/superloss_lr1e-1_epo20_results/fract0.20 98.87±0.05
+3 MNIST/ea_emak_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.87
+4 MNIST/ea_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.89
+5 MNIST/ea_gak_tanh_newq_lr1e-1_epo20_30times_results/fract0.20/seed1/ 98.84
 
 
 3~5 是 不同的discrimloss hy 超参搜索30次后取最优的结果

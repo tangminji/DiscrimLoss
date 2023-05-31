@@ -353,10 +353,10 @@ def main(params):
 
 
 if __name__ == '__main__':
-    print("load params from : ", args.minist_with_params_path_box)
-    params = json.load(open(args.minist_with_params_path_box, 'r', encoding="utf-8"))
+    print("load params from : ", args.mnist_with_params_path_box)
+    params = json.load(open(args.mnist_with_params_path_box, 'r', encoding="utf-8"))
     global ITERATION
     ITERATION = params['ITERATION']
     assert params is not None
     res = main(params=params)
-    json.dump(res, open(args.minist_out_box, "w+", encoding="utf-8"), ensure_ascii=False)
+    json.dump(res, open(args.mnist_out_box, "w+", encoding="utf-8"), ensure_ascii=False)

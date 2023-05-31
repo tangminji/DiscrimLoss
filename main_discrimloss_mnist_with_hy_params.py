@@ -356,11 +356,11 @@ def main(params):
 
 
 if __name__ == '__main__':
-    print("load params from : ", args.minist_with_params_path)
-    params = json.load(open(args.minist_with_params_path, 'r', encoding="utf-8"))['best']
+    print("load params from : ", args.mnist_with_params_path)
+    params = json.load(open(args.mnist_with_params_path, 'r', encoding="utf-8"))['best']
     assert params is not None
-    # minist_ablation_a
-    params['tanh_a'] = params['tanh_a'] if args.minist_ablation_a is None else args.minist_ablation_a
-    params['tanh_p'] = params['tanh_p'] if args.minist_ablation_p is None else args.minist_ablation_p
-    params['tanh_q'] = params['tanh_q'] if args.minist_ablation_newq is None else args.minist_ablation_newq
+    # mnist_ablation_a
+    params['tanh_a'] = params['tanh_a'] if args.mnist_ablation_a is None else args.mnist_ablation_a
+    params['tanh_p'] = params['tanh_p'] if args.mnist_ablation_p is None else args.mnist_ablation_p
+    params['tanh_q'] = params['tanh_q'] if args.mnist_ablation_newq is None else args.mnist_ablation_newq
     main(params=params)

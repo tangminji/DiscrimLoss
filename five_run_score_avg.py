@@ -65,9 +65,9 @@ if __name__ == '__main__':
     # cal_avg("WIKIHOW/ORDER/roberta_ce_ses1000",reverse=True)
     
     # for i in [0, 20, 40, 60, 80]:
-    #     cal_avg("MINIST/nocl_lr1e-1_epo20_results/fract0.%s" % (str(i)),reverse=True)
+    #     cal_avg("MNIST/nocl_lr1e-1_epo20_results/fract0.%s" % (str(i)),reverse=True)
     # for i in [0, 20, 40, 60, 80]:
-    #     cal_avg("MINIST/superloss_lr1e-1_epo20_results/fract0.%s" % (str(i)),reverse=True)
+    #     cal_avg("MNIST/superloss_lr1e-1_epo20_results/fract0.%s" % (str(i)),reverse=True)
     # for i in [0, 20, 40, 80]:
     #     cal_avg("UTKFACE/ea_emak_tanh_L1_results/fract0.%d"%i,reverse=False)
     # for i in [0, 20, 40, 60, 80]:
@@ -75,11 +75,11 @@ if __name__ == '__main__':
     # cal_avg("UTKFACE/ea_emak_tanh_L1_results_5run/fract0.20",reverse=False)
     # cal_avg("UTKFACE/ea_emak_tanh_L2_results_5run/fract0.20",reverse=False)
 
-    # cal_avg("MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.0",reverse=True)
-    # cal_avg("MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.20", reverse=True)
-    # cal_avg("MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.40", reverse=True)
-    # cal_avg("MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.60", reverse=True)
-    # cal_avg("MINIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.80", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.0",reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.20", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.40", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.60", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_newq_lr1e-1_epo20/fract0.80", reverse=True)
 
     # cal_avg("CIFAR10/box_ea_emak_tanh_newq_lr1e-1_results/fract0.0", reverse=True)
     # cal_avg("CIFAR10/box_ea_emak_tanh_newq_lr1e-1_results/fract0.20", reverse=True)
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     # cal_avg("UTKFACE/ea_emak_tanh_L1_results_5run/fract0.60", reverse=False)
     # cal_avg("UTKFACE/ea_emak_tanh_L1_results_5run/fract0.80", reverse=False)
 
-    # cal_avg("MINIST/box_ea_emak_tanh_wo_es_newq_lr1e-1_epo20/fract0.40", reverse=True)
-    # cal_avg("MINIST/box_ea_emak_tanh_wo_ea_newq_lr1e-1_epo20/fract0.40", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_wo_es_newq_lr1e-1_epo20/fract0.40", reverse=True)
+    # cal_avg("MNIST/box_ea_emak_tanh_wo_ea_newq_lr1e-1_epo20/fract0.40", reverse=True)
 
 

@@ -145,40 +145,40 @@ def get_MNIST_model_and_loss_criterion(args, params=None, ITERATION=None):
     # https://zhuanlan.zhihu.com/p/108489655
 
     if params is None:
-        if args.minist_loss_type == "ea_gak_tanh_newq":
+        if args.mnist_loss_type == "ea_gak_tanh_newq":
             criterion = DiscrimEA_GAK_TANHLoss_newQ().to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_newQ().to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_wo_ea_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_wo_ea_newq":
             criterion = DiscrimEA_EMAK_TANHWO_EALoss_newQ().to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_wo_es_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_wo_es_newq":
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ().to(args.device)
         elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(classes=args.nr_classes).to(args.device)
-        elif args.minist_loss_type == "ea_tanh_newq":
+        elif args.mnist_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=0.5).to(args.device)
-        elif args.minist_loss_type == "no_cl":
+        elif args.mnist_loss_type == "no_cl":
             criterion = nn.CrossEntropyLoss(reduction='none').to(args.device)
     else:
-        if args.minist_loss_type == "ea_gak_tanh_newq":
+        if args.mnist_loss_type == "ea_gak_tanh_newq":
             criterion = DiscrimEA_GAK_TANHLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                     q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                      q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_wo_ea_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_wo_ea_newq":
             criterion = DiscrimEA_EMAK_TANHWO_EALoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                      q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
-        elif args.minist_loss_type == "ea_emak_tanh_wo_es_newq":
+        elif args.mnist_loss_type == "ea_emak_tanh_wo_es_newq":
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                      q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
         elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                            q=params['tanh_q'], sup_eps=params['sup_eps'],classes=args.nr_classes).to(args.device)
-        elif args.minist_loss_type == "ea_tanh_newq":
+        elif args.mnist_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=0.5, a=params['tanh_a'], p=params['tanh_p'],
                                                 q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
-        elif args.minist_loss_type == "no_cl":
+        elif args.mnist_loss_type == "no_cl":
             criterion = nn.CrossEntropyLoss(reduction='none').to(args.device)
 
     criterion_val = nn.CrossEntropyLoss(reduction='none').to(args.device)
