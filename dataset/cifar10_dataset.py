@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 
 from common.DiscrimLoss import (DiscrimEA_TANHLoss_newQ, DiscrimEA_EMAK_TANHLoss_newQ, DiscrimEA_GAK_TANHLoss_newQ,
-                                DiscrimEA_EMAK_TANHWO_EALoss_newQ, DiscrimEA_EMAK_TANH_WO_ESLoss_newQ)
+                                DiscrimEA_EMAK_TANHWO_EALoss_newQ, DiscrimEA_EMAK_TANH_WO_ESLoss_newQ,DiscrimEA_EMAK_TANHLoss_FIXK_newQ)
 from common.cmd_args import CIFAR10_PATH
 from models.wide_resnet import WideResNet28_10
 
@@ -157,6 +157,8 @@ def get_CIFAR10_model_and_loss_criterion(args, params=None, ITERATION=None):
             criterion = DiscrimEA_EMAK_TANHWO_EALoss_newQ().to(args.device)
         elif args.cifar_loss_type == "ea_emak_tanh_wo_es_newq":
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ().to(args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(classes=args.nr_classes).to(args.device)
         elif args.cifar_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=math.log(args.nr_classes)).to(args.device)
         elif args.cifar_loss_type == "no_cl":
@@ -178,6 +180,9 @@ def get_CIFAR10_model_and_loss_criterion(args, params=None, ITERATION=None):
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                            q=params['tanh_q'], sup_eps=params['sup_eps']).to(
                 args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(a=params['tanh_a'], p=params['tanh_p'],
+                                                           q=params['tanh_q'], sup_eps=params['sup_eps'],classes=args.nr_classes).to(args.device)
         elif args.cifar_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=math.log(args.nr_classes), a=params['tanh_a'], p=params['tanh_p'],
                                                 q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)

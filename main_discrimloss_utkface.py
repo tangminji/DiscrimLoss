@@ -26,7 +26,6 @@ from dataset.utkface_dataset import get_UTKFACE_train_and_val_loader, get_UTKFAC
 import csv
 best_mae = 65536
 
-#模型，数据单独配置, model and data
 MD_CLASSES = {
     'UTKFACE':(get_UTKFACE_train_and_val_loader, get_UTKFACE_model_and_loss_criterion)
 }
@@ -72,7 +71,7 @@ def validate(args, val_loader, model, criterion, epoch):
     log_value('val/mean absolute error', MAE.avg, step=epoch)
     # Save checkpoint.
     mae = MAE.avg
-    if mae < best_mae:#取最小
+    if mae < best_mae:
         best_mae = mae
         utils.checkpoint(mae, epoch, model, args.save_dir)
 
@@ -130,7 +129,7 @@ def train_for_one_epoch(args,
         inputs, target = inputs.to(args.device), target.to(args.device)
 
         # Flush the gradient buffer for model and data-parameters. https://cloud.tencent.com/developer/article/1710864
-        optimizer.zero_grad()#TODO:此时和model.zero_grad()等价
+        optimizer.zero_grad()
         optimizer_inst_param.zero_grad()
         # Compute logits
         logits = model(inputs)

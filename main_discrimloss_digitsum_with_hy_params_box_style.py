@@ -33,7 +33,7 @@ best_acc = 0
 best_mae = 65536
 best_test_mae = 65536
 
-# 模型，数据单独配置, model and data
+# model and data
 MD_CLASSES = {
     'DIGITSUM': (get_DIGITSUM_train_val_test_loader, get_DIGITSUM_model_and_loss_criterion)
 }
@@ -180,7 +180,6 @@ def train_for_one_epoch(args,
 
         global_iter = global_iter + 1
 
-        # todo 更新，根据model和criterion
         batch = tuple(t.to(args.device) for t in batch)
         inputs, lengths, index_dataset, target = batch
 
@@ -198,7 +197,6 @@ def train_for_one_epoch(args,
         else:
             loss = criterion(logits.squeeze(dim=-1), target)
 
-        # 只是用于记录log信息
         loss_parameters[index_dataset] = loss
         loss = loss.mean()
 
@@ -316,7 +314,7 @@ def main_worker(args, config, params, ITERATION):
         val_loss, val_metric = validate(args, val_loader, model, loss_criterion_val, epoch)
         # Evaluate on test set
         test_loss, test_metric = test(args, test_loader, model, loss_criterion_val, epoch)
-        if val_metric < best_mae:  # 取最小
+        if val_metric < best_mae:
             best_mae = val_metric
             best_test_mae = test_metric
             if not args.no_save_model:

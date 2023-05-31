@@ -98,7 +98,6 @@ def get_WIKIHOW_model_and_loss_criterion(args, params=None, ITERATION=None):
         logname = os.path.join(args.save_dir, model.__class__.__name__) + '_hy_iter_%d.csv' % ITERATION
 
     model.to(args.device)
-    # todo 选择 discrimloss
     a = args.a if params is None else params['tanh_a']
     p = args.p if params is None else params['tanh_p']
     q = -args.newq * args.p if params is None else -params['tanh_q'] * params['tanh_p']
@@ -117,7 +116,7 @@ def get_WIKIHOW_model_and_loss_criterion(args, params=None, ITERATION=None):
         criterion = nn.CrossEntropyLoss(reduction='none').to(args.device)
     else:
         assert False
-    # TODO-jlgao 根据不同的数据类型，需要使用不同到的criterion_val
+    # criterion_val
     criterion_val = nn.CrossEntropyLoss(reduction='none').to(args.device)
     # multi-gpu training (should be after apex fp16 initialization)
     if args.n_gpu > 1:

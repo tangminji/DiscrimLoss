@@ -33,7 +33,6 @@ THRESHOLD = 0.417  # 0.667#0.417#0.667#0.95#0.90#0.85#switch time
 best_acc = 0
 best_mae = 65536
 
-# 模型，数据单独配置, model and data
 MD_CLASSES = {
     'MNIST': (get_MNIST_train_and_val_loader, get_MNIST_model_and_loss_criterion),
     'CIFAR10': (get_CIFAR10_train_and_val_loader, get_CIFAR10_model_and_loss_criterion),
@@ -97,7 +96,7 @@ def validate(args, val_loader, model, criterion, epoch):
         log_value('val/mean absolute error', MAE.avg, step=epoch)
         # Save checkpoint.
         mae = MAE.avg
-        if mae < best_mae:  # 取最小
+        if mae < best_mae:
             best_mae = mae
             utils.checkpoint(mae, epoch, model, args.save_dir)
 

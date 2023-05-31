@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 res = []
-for root, dirs , files in os.walk('/users10/mjtang/wtt/ml-data-parameters-master-20210416/CIFAR10/box_ea_emak_tanh_newq_lr1e-1_results_ablation/fract0.40'):
+for root, dirs , files in os.walk('./CIFAR10/box_ea_emak_tanh_newq_lr1e-1_results_ablation/fract0.40'):
     for csv in filter(lambda x: re.match(".*\.csv",x),files):
         label = root.rsplit('/',2)[-2]
         kind, extend = label[0],float(label[1:])

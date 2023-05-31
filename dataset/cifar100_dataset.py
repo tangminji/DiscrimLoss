@@ -18,7 +18,7 @@ from common.DiscrimLoss import (DiscrimLoss, DiscrimESLoss, DiscrimEALoss,
                                 DiscrimEA_GAKLoss, DiscrimEA_EMAKLoss,
                                 DiscrimEA_2Loss, DiscrimEA_0Loss,
                                 DiscrimEAEXPLoss, DiscrimEA_TANHLoss, DiscrimEA_GAK_TANHLoss, DiscrimEA_EMAK_TANHLoss,
-                                DiscrimEA_TANHLoss_newQ, DiscrimEA_EMAK_TANHLoss_newQ, DiscrimEA_GAK_TANHLoss_newQ)
+                                DiscrimEA_TANHLoss_newQ, DiscrimEA_EMAK_TANHLoss_newQ, DiscrimEA_GAK_TANHLoss_newQ, DiscrimEA_EMAK_TANHLoss_FIXK_newQ)
 
 class CIFAR100WithIdx(CIFAR100):
     """
@@ -154,6 +154,8 @@ def get_CIFAR100_model_and_loss_criterion(args, params=None, ITERATION=None):
             criterion = DiscrimEA_GAK_TANHLoss_newQ().to(args.device)
         elif args.cifar_loss_type == "ea_emak_tanh_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_newQ().to(args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(classes=args.nr_classes).to(args.device)
         elif args.cifar_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=math.log(args.nr_classes)).to(args.device)
         elif args.cifar_loss_type == "no_cl":
@@ -167,6 +169,9 @@ def get_CIFAR100_model_and_loss_criterion(args, params=None, ITERATION=None):
         elif args.cifar_loss_type == "ea_emak_tanh_newq":
             criterion = DiscrimEA_EMAK_TANHLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                 q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(a=params['tanh_a'], p=params['tanh_p'],
+                                                           q=params['tanh_q'], sup_eps=params['sup_eps'],classes=args.nr_classes).to(args.device)
         elif args.cifar_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=math.log(args.nr_classes), a=params['tanh_a'], p=params['tanh_p'],
                                            q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)

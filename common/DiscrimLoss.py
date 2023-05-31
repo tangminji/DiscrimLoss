@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from common.utils import AverageMeter
+import math
 
 beta = 0.9  # for 1st phase to seperate easy/hard sample, one sample loss(ea)
 rho = 0.9  # for k
@@ -28,6 +29,31 @@ def ES_piecewise(ce, SUPPRESSION_EPS):
         return 0.2
     else:
         return 1.0
+
+def ES_sin(ce, SUPPRESSION_EPS):
+    '''
+    ce:current epoch
+    '''
+    if ce < SUPPRESSION_EPS:
+        return math.sin((ce + 1) / SUPPRESSION_EPS * math.pi/2) * SUPPRESSION_EPS / 10
+    else:
+        return 1.0
+    
+def ES_exp(ce, SUPPRESSION_EPS):
+    '''
+    ce:current epoch
+    '''
+    if ce < SUPPRESSION_EPS:
+        return math.exp(ce + 1 - SUPPRESSION_EPS) * SUPPRESSION_EPS / 10
+    else:
+        return 1.0
+
+ES = {
+    'linear': ES_linear,
+    'sin': ES_sin,
+    'exp': ES_exp,
+    'piecewise': ES_piecewise
+}
 
 
 class DiscrimLoss(nn.Module):
@@ -174,7 +200,7 @@ class DiscrimEA_TANHLoss(nn.Module):
 
     def forward(self, args, logits, targets, data_parameter_minibatch, exp_avg, index_dataset, epoch):
         self.gamma = torch.mul(self.a, self.tanh(self.p * epoch + self.q)) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -217,7 +243,7 @@ class DiscrimEA_TANHLoss_newQ(nn.Module):
 
     def forward(self, args, logits, targets, data_parameter_minibatch, exp_avg, index_dataset, epoch):
         self.gamma = torch.mul(self.a, self.tanh(self.p * (epoch - self.q))) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -387,7 +413,7 @@ class DiscrimEA_GAK_TANHLoss(nn.Module):
         index_dataset: batch of samples' indexes
         '''
         self.gamma = torch.mul(self.a, self.tanh(self.p * epoch + self.q)) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -435,7 +461,7 @@ class DiscrimEA_GAK_TANHLoss_newQ(nn.Module):
         index_dataset: batch of samples' indexes
         '''
         self.gamma = torch.mul(self.a, self.tanh(self.p * (epoch - self.q))) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -524,7 +550,7 @@ class DiscrimEA_EMAK_TANHLoss(nn.Module):
         index_dataset: batch of samples' indexes
         '''
         self.gamma = torch.mul(self.a, self.tanh(self.p * epoch + self.q)) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -582,7 +608,7 @@ class DiscrimEA_EMAK_TANHLoss_newQ(nn.Module):
         '''
 
         self.gamma = torch.mul(self.a, self.tanh(self.p * (epoch - self.q))) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')
@@ -611,6 +637,58 @@ class DiscrimEA_EMAK_TANHLoss_newQ(nn.Module):
         # self.k1 /= bias_cor_k
 
         new_loss.sub_(self.gamma.type_as(new_loss) * self.k1)
+        new_loss.mul_(torch.tensor(es, dtype=new_loss.dtype))
+        # Compute losses scaled by data parameters
+        new_loss = new_loss / data_parameter_minibatch
+
+        # loss = loss.sum()/self.batch_size
+        return new_loss
+
+# Fix K = logC  which means predict[y_true] = 1/C; only use for classification
+class DiscrimEA_EMAK_TANHLoss_FIXK_newQ(nn.Module):
+    '''
+    K：exponential moving average/unit: one batch
+    '''
+
+    def __init__(self, a=0.2, p=1.5, q=-50, sup_eps=3, classes=10):
+        super(DiscrimEA_EMAK_TANHLoss_FIXK_newQ, self).__init__()
+        self.first = True
+        self.a = torch.tensor([a])  # nn.parameter.Parameter(torch.FloatTensor([0.2]))  # 1+0.2+0.2
+        self.p = torch.tensor([p])  # nn.parameter.Parameter(torch.FloatTensor([1.5]))
+        self.q = torch.tensor([q])  # nn.parameter.Parameter(torch.FloatTensor([-50]))
+        self.sup_eps = sup_eps
+        self.tanh = nn.Tanh()
+        self.k = torch.tensor(classes*1.0).log().item()
+
+
+    def forward(self, args, logits, targets, data_parameter_minibatch, exp_avg, index_dataset, epoch):
+        '''
+        exp_avg: exponential moving average for each sample
+        index_dataset: batch of samples' indexes
+        '''
+        es = ES[args.es_type](epoch, self.sup_eps)
+        # loss definition
+        if args.task_type == 'classification':
+            loss = F.cross_entropy(logits, targets, reduction='none')
+        elif args.task_type == 'regression':
+            logits_ = logits.squeeze(dim=-1)
+            targets = targets.type_as(logits_)
+            if args.reg_loss_type == 'L1':
+                loss = F.smooth_l1_loss(logits_, targets, reduction='none')
+            elif args.reg_loss_type == 'L2':
+                loss = F.mse_loss(logits_, targets, reduction='none')
+
+        new_loss = torch.add(torch.mul(exp_avg[index_dataset], beta), loss, alpha=1.0 - beta)
+        exp_avg[index_dataset] = new_loss.detach()
+        # loss.data = exp_avg[index_dataset]
+        # bias correction
+        bias_cor = 1.0 - beta ** (epoch + 1)
+        new_loss.div_(bias_cor)
+        # bias correction
+        # bias_cor_k = 1.0 - rho ** (epoch + 1)
+        # self.k1 /= bias_cor_k
+
+        new_loss.sub_(self.k)
         new_loss.mul_(torch.tensor(es, dtype=new_loss.dtype))
         # Compute losses scaled by data parameters
         new_loss = new_loss / data_parameter_minibatch
@@ -696,7 +774,7 @@ class DiscrimEA_EMAK_TANHWO_EALoss_newQ(nn.Module):
         index_dataset: batch of samples' indexes
         '''
         self.gamma = torch.mul(self.a, self.tanh(self.p * (epoch - self.q))) + self.a + 1.
-        es = ES_linear(epoch, self.sup_eps)
+        es = ES[args.es_type](epoch, self.sup_eps)
         # loss definition
         if args.task_type == 'classification':
             loss = F.cross_entropy(logits, targets, reduction='none')

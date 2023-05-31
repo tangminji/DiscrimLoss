@@ -348,7 +348,6 @@ def main(params):
           format(best_acc, params, ITERATION, STATUS_OK))
 
     # Dictionary with information for evaluation, otherwise will report errors
-    # 必须有loss
     run_time = utils.format_time(timer() - start)
     loss = - best_acc
     return {'loss': loss, 'best_acc': best_acc,

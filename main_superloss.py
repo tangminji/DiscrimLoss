@@ -19,7 +19,6 @@ from dataset.cifar10_dataset import get_CIFAR10_train_and_val_loader, get_CIFAR1
 
 best_acc = 0
 
-#模型，数据单独配置, model and data
 MD_CLASSES = {
     'MNIST':(get_MNIST_train_and_val_loader, get_MNIST_model_and_loss_criterion),
     'CIFAR10':(get_CIFAR10_train_and_val_loader, get_CIFAR10_model_and_loss_criterion),

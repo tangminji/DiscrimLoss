@@ -19,6 +19,7 @@ parser.add_argument('--a', default=0.2, type=float)
 parser.add_argument('--p', default=1.2, type=float)
 parser.add_argument('--newq', default=3, type=int)
 parser.add_argument('--sup_eps', default=3, type=int)
+parser.add_argument('--es_type', default='linear', type=str, choices=['linear', 'sin', 'exp', 'piecewise'],help='early suppression type')
 
 parser.add_argument('--wikihow_loss_type', type=str,choices=["no_cl","ea_gak_tanh_newq","ea_emak_tanh_newq","ea_tanh_newq"])
 
@@ -45,9 +46,9 @@ parser.add_argument('--per_gpu_test_batch_size', default=24, type=int,
 parser.add_argument('-p', '--print-freq', default=10, type=int,
                     metavar='N', help='print frequency')
 
-# wikihow任务中基本不用改变的参数
+# wikihow
 
-parser.add_argument('--cache_dir', default='/users10/mjtang/dataset/huggingface',type=str)
+parser.add_argument('--cache_dir', default='',type=str, help='the path where the model was downloaded')
 parser.add_argument('--model_type', default='bert',type=str)
 parser.add_argument('--log_dir', default='WIKIHOW/GOAL/%s_results/logs_roberta_ea_tanh', type=str)
 parser.add_argument('--save_dir', default='WIKIHOW/GOAL/%s_results/weights_roberta_ea_tanh', type=str)
@@ -74,23 +75,13 @@ parser.add_argument('--learn_inst_parameters', default=True, const=True, action=
 parser.add_argument('--skip_clamp_data_param', default=False, const=True, action='store_const',
                     help='Do not clamp data parameters during optimization')
 
-# by jlgao
-
-# 加载基线配置
-
-
-
-
 args = parser.parse_args()
 
-CURRENT_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master'
+CURRENT_PATH = os.getcwd()
 
-# WIKIHOW_GOAL_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master/dataset/wikihow/goal_for_code_test'
-WIKIHOW_GOAL_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master/dataset/wikihow/goal'
-
-WIKIHOW_ORDER_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master/dataset/wikihow/order'
-
-WIKIHOW_STEP_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master/dataset/wikihow/step'
+WIKIHOW_GOAL_PATH = os.path.join(CURRENT_PATH, 'dataset/wikihow/goal')
+WIKIHOW_ORDER_PATH = os.path.join(CURRENT_PATH, 'dataset/wikihow/order')
+WIKIHOW_STEP_PATH = os.path.join(CURRENT_PATH, 'dataset/wikihow/step')
 
 MODEL = {
     'bert': 'bert-base-uncased',

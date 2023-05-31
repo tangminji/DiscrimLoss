@@ -32,7 +32,7 @@ from timeit import default_timer as timer
 
 best_mae = 65536
 ITERATION=0
-# 模型，数据单独配置, model and data
+# model and data
 MD_CLASSES = {
     'UTKFACE': (get_UTKFACE_train_and_val_loader, get_UTKFACE_model_and_loss_criterion)
 }
@@ -79,7 +79,7 @@ def validate(args, val_loader, model, criterion, epoch):
     log_value('val/mean absolute error', MAE.avg, step=epoch)
     # Save checkpoint.
     mae = MAE.avg
-    if mae < best_mae:  # 取最小
+    if mae < best_mae:
         best_mae = mae
         utils.checkpoint(mae, epoch, model, args.save_dir)
 
@@ -139,7 +139,7 @@ def train_for_one_epoch(args,
         inputs, target = inputs.to(args.device), target.to(args.device)
 
         # Flush the gradient buffer for model and data-parameters. https://cloud.tencent.com/developer/article/1710864
-        optimizer.zero_grad()  # TODO:此时和model.zero_grad()等价
+        optimizer.zero_grad()
         optimizer_inst_param.zero_grad()
         # Compute logits
         logits = model(inputs)
@@ -209,7 +209,6 @@ def main_worker(args, config, params, ITERATION):
         config1 (dict): config file for the experiment.
     """
     global best_mae
-    # hyperopt调参每次初始化，得到本次超参设定的optimal metric result
     best_mae = 65536
     global_iter = 0
     # learning_rate_schedule = np.array([80, 100, 160])
@@ -344,9 +343,8 @@ def main(params):
           format(best_mae, params, ITERATION, STATUS_OK))
 
     # Dictionary with information for evaluation, otherwise will report errors
-    # 必须有loss
     run_time = utils.format_time(timer() - start)
-    loss = best_mae  # 二者目标一致，越小越好
+    loss = best_mae
     return {'loss': loss, 'best_mae': best_mae,
             'params': params, 'iteration': ITERATION,
             'train_time': run_time, 'status': STATUS_OK}

@@ -2,6 +2,7 @@ import argparse
 
 import numpy as np
 from hyperopt import hp
+import os
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 # TODO
@@ -44,10 +45,10 @@ parser.add_argument('--per_gpu_test_batch_size', default=24, type=int,
 parser.add_argument('-p', '--print-freq', default=10, type=int,
                     metavar='N', help='print frequency')
 
-# wikihow任务中基本不用改变的参数
+# wikihow
 parser.add_argument('--model_path',
                     default="/users5/jlgao/datas/huggingface_transformers/RoBerTa_Base_transformer_2_4_1", type=str,
-                    help='Path to roberta_pretrain_model, used in wikihow task.')
+                    help='Path to roberta_pretrain_model, used in wikihow task.') # roberta_base_2.4.1
 parser.add_argument('--log_dir', default='WIKIHOW/GOAL/%s_results/logs_roberta_ea_tanh', type=str)
 parser.add_argument('--save_dir', default='WIKIHOW/GOAL/%s_results/weights_roberta_ea_tanh', type=str)
 
@@ -75,10 +76,6 @@ parser.add_argument('--skip_clamp_data_param', default=False, const=True, action
 args = parser.parse_args()
 
 
-# TODO-jlgao update
-CURRENT_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master'
-
-
-# DIGITSUM_PATH = '/users5/jlgao/for_wtt/ml-data-parameters-master/dataset/digitsum'
+CURRENT_PATH = os.getcwd()
 
 DIGITSUM_PATH = './dataset/digitsum'

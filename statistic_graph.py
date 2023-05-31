@@ -18,7 +18,7 @@ colors = ['#1f77b4',
           '#1a55FF',
           '#ae3400']
 
-CURRENT_PATH='/users6/ttwu/script/GoalstepRE/ml-data-parameters-master'
+CURRENT_PATH=os.getcwd()
 def var_sigma_diff_init():
     with open(os.path.join(CURRENT_PATH, 'var_sigmas.txt'), 'r') as f:
         count = 0

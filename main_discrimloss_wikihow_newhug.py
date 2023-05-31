@@ -23,14 +23,9 @@ from common import utils
 from common.cmd_args_wikihow import args
 from dataset.wikihow_dataset import get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion
 
-# TODO-jlgao 使用时注意调整
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"#"0,1,2,7"#
-
 best_acc = 0
 best_mae = 65536
 
-# 模型，数据单独配置, model and data
 MD_CLASSES = {
     'WIKIHOW': (get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion)
 }
@@ -92,11 +87,8 @@ def validate(args, val_loader, model, criterion, epoch):
 
         model_output_file = args.save_dir + '/epoch_{}/model'.format(epoch)
         os.makedirs(model_output_file, exist_ok=True)
-        model_to_save.save_pretrained(model_output_file) # 存模型
+        model_to_save.save_pretrained(model_output_file)
 
-        # 可以同时存tokenizer,不过它没有传入
-        
-        # 不同模型含的文件不一样
         # os.system("cp %s %s" % (os.path.join(args.model_path, "merges.txt"), model_output_file))
         # os.system("cp %s %s" % (os.path.join(args.model_path, "vocab.json"), model_output_file))
         
@@ -253,7 +245,6 @@ def train_for_one_epoch(args,
         else:
             loss = criterion(logits, target)
 
-        # 只是用于记录log信息
         loss_parameters[index_dataset] = loss
         loss = loss.mean()
 

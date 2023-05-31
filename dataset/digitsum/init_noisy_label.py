@@ -44,7 +44,6 @@ def load_dataset(data_path, rand_fraction=0.):
                                                               nr_corrupt_instances,
                                                               X.size(0)))
     index_set = torch.tensor(range(X.size(0)), dtype=torch.long)
-    # 这里由于交换的是Y标签，因此index仍然为0,1,2...
     return TensorDataset(X, lengths, index_set, Y)
 
 

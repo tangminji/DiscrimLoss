@@ -21,9 +21,6 @@ import shutil
 from models.resnet import resnet18
 import torch.optim as optim
 import sys
-#get current root directory
-# o_path = '/home/zhh/code/ml-data-parameters-master/'
-# sys.path.insert(0, o_path)#load local transformer not the package one
 
 from common.cmd_args import args, UTKFACE_TRAINPATH, UTKFACE_TESTPATH, UTKFACE_IMGPATH
 from PIL import Image
@@ -67,8 +64,8 @@ class UTKFACEWithIdx(data.Dataset):
         if self.rand_fraction > 0.0:
             self.seed = seed
             self.data = self.corrupt_fraction_of_data()
-        #TODO: 已实现的功能，不会再实现
-        #self.root = root#传入的root为UTKFACE_IMGPATH
+        #TODO
+        #self.root = root
         #self.loader = transforms.Compose([transforms.ToTensor()])
         #self.seed = seed
         #self._prepare_samples(root)
@@ -116,7 +113,7 @@ class UTKFACEWithIdx(data.Dataset):
     def _load_label(self, path):
         str_list = os.path.basename(path).split('.')[0].strip().split('_')
         #age, gender, race = map(int, str_list[:3])
-        age = float(str_list[0])#整形报错
+        age = float(str_list[0])
         label = age#dict(age=age, gender=gender, race=race)
         return label
 
@@ -256,7 +253,7 @@ def get_UTKFACE_train_and_val_loader(args):
     #     transforms.ToTensor(),
     #     transforms.Normalize((0.596, 0.456, 0.391), (0.259, 0.231, 0.227)),
     # ])
-    #TODO:依照作者邮件设置，同imagenet
+    #TODO: same as imagenet
     transform = transforms.Compose([
         transforms.RandomResizedCrop(128),
         transforms.RandomHorizontalFlip(),
@@ -301,7 +298,7 @@ def get_UTKFACE_model_and_loss_criterion(args, params=None, ITERATION=None):
     #resnet18 pretrained by ImageNet
     model = resnet18(num_classes=1)
     model_dict = model.state_dict()
-    pretrained_model = models.resnet18(pretrained=True)#模型下载，只一次即可
+    pretrained_model = models.resnet18(pretrained=True)#download once
     pretrained_dict = pretrained_model.state_dict()
     #1. filter out unnecessary keys
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
@@ -316,7 +313,6 @@ def get_UTKFACE_model_and_loss_criterion(args, params=None, ITERATION=None):
 
 
     model.to(args.device)
-    #原文中并未将tau设置为固定值
 
     if params is None:
         if args.utkface_loss_type == "ea_gak_tanh":
@@ -346,7 +342,6 @@ def get_UTKFACE_model_and_loss_criterion(args, params=None, ITERATION=None):
                                                           find_unused_parameters=True)
     return model, criterion, criterion_val, logname
 
-#TODO:作者提供，暂时未使用
 class RegressionError(nn.Module):
     def __init__(self, type):
         super().__init__()

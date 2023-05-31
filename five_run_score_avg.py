@@ -11,18 +11,19 @@ def cal_avg(path):
         res_path = os.path.join(res_path, list(filter(lambda x: re.match(".*\.csv", x), os.listdir(res_path)))[0])
         datas = [line.strip().split(",") for line in open(res_path, 'r', encoding="utf-8").readlines()]
         score = 100000000000
+        # print(len(datas))
         for t in datas[:-1]:
-            if t[-3] == datas[-1][-3]:
+            if t[-1] == datas[-1][-1]:
                 score = float(t[-1])
         assert score != 100000000000
         histo.append((seed_n, score))
     histo.sort(key=lambda x: x[-1])
     histo = histo[:5]
+    histo_score = [t[-1] for t in histo]
+    avg_score = sum(histo_score) / len(histo)
+    print("%s\t%.2f±%.2f" % (path, avg_score, numpy.std(histo_score)))
     for seed_n, sc in histo:
         print(seed_n, sc)
-    histo = [t[-1] for t in histo]
-    avg_score = sum(histo) / len(histo)
-    print("%s\t%.2f±%.2f" % (path, avg_score, numpy.std(histo)))
 
 # def cal_avg(path,reverse):
 #     histo = []
@@ -49,8 +50,17 @@ def cal_avg(path):
 
 
 if __name__ == '__main__':
-    cal_avg("DIGITSUM/mae_noscheduler_lr0.1_epo100_lstm_results/fract0.40")
-    cal_avg("DIGITSUM/box_ea_GAK_tanh_noscheduler_lr1e-1_epo100_lstm_results/fract0.40")
+    cal_avg("CIFAR10/sin/fract0.40")
+    cal_avg("CIFAR10/sin/fract0.60")
+    cal_avg("CIFAR10/exp/fract0.40")
+    cal_avg("CIFAR10/exp/fract0.60")
+
+    cal_avg("CIFAR100/sin/fract0.40")
+    cal_avg("CIFAR100/sin/fract0.60")
+    cal_avg("CIFAR100/exp/fract0.40")
+    cal_avg("CIFAR100/exp/fract0.60")
+    # cal_avg("DIGITSUM/mae_noscheduler_lr0.1_epo100_lstm_results/fract0.40")
+    # cal_avg("DIGITSUM/box_ea_GAK_tanh_noscheduler_lr1e-1_epo100_lstm_results/fract0.40")
     # cal_avg("WIKIHOW/GOAL/roberta_ce_ses1000",reverse=True)
     # cal_avg("WIKIHOW/ORDER/roberta_ce_ses1000",reverse=True)
     

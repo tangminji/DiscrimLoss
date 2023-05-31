@@ -28,7 +28,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"  # "0,1,2"
 
 best_acc = 0
 
-# 模型，数据单独配置, model and data
+# model and data
 MD_CLASSES = {
     'DIGITSUM': (get_DIGITSUM_train_val_test_loader_with_bucket, get_DIGITSUM_model_and_loss_criterion)
 }
@@ -73,7 +73,7 @@ def validate(args, val_loader, model, criterion, epoch, best_mae):
     log_value('val/mean absolute error', MAE.avg, step=epoch)
     # Save checkpoint.
     mae = MAE.avg
-    if mae < best_mae:  # 取最小
+    if mae < best_mae:
         best_mae = mae
         if not args.no_save_model:
             utils.checkpoint(mae, epoch, model, args.save_dir)
@@ -174,7 +174,6 @@ def train_for_one_epoch(args,
 
         global_iter = global_iter + 1
 
-        # todo 更新，根据model和criterion
         batch = tuple(t.to(args.device) for t in batch)
         inputs, lengths, index_dataset, target = batch
 
@@ -192,7 +191,6 @@ def train_for_one_epoch(args,
         else:
             loss = criterion(logits.squeeze(dim=-1), target)
 
-        # 只是用于记录log信息
         loss_parameters[index_dataset] = loss
         loss = loss.mean()
 

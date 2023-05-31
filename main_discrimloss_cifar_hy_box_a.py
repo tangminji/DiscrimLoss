@@ -5,8 +5,6 @@
 # Copyright (C) 2019 Apple Inc. All Rights Reserved.
 #
 
-# 网格调参，将结果输出到json文件中
-
 import json
 import os
 

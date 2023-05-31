@@ -23,14 +23,9 @@ from common import utils
 from common.cmd_args_wikihow import args
 from dataset.wikihow_dataset import get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion
 
-# TODO-jlgao 使用时注意调整
-# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"#"0,1,2,7"#
-
 best_acc = 0
 best_mae = 65536
 
-# 模型，数据单独配置, model and data
 MD_CLASSES = {
     'WIKIHOW': (get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion)
 }
@@ -236,7 +231,6 @@ def train_for_one_epoch(args,
         else:
             loss = criterion(logits, target)
 
-        # 只是用于记录log信息
         loss_parameters[index_dataset] = loss
         loss = loss.mean()
 

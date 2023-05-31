@@ -166,6 +166,8 @@ WIKIHOW/
 
 # data
 dataset/cifar-10-batches-py/
+dataset/cifar-100-python
+dataset/MNISTWithIdx
 dataset/digitsum/**/*.txt
 dataset/wikihow/
 # cache file

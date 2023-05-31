@@ -138,7 +138,7 @@ def checkpoint(acc, epoch, net, save_dir):
     for last_e in range(epoch):
         last_e_path = save_dir + '/epoch_{}.pth.tar'.format(last_e)
         if os.path.exists(last_e_path):
-            os.remove(last_e_path) #删除文件应该用os.remove
+            os.remove(last_e_path) #os.remove
             # shutil.rmtree(last_e_path, ignore_errors=True)
 
 def save_config(save_dir, cfg):
@@ -275,8 +275,6 @@ def generate_log_dir_hyp(args, ITERATION):
             raise Exception(error)
     else:
         #https://blog.csdn.net/webmater2320/article/details/105831920
-        #/users6/ttwu/.local/lib/python3.7/site-packages/tensorboard_logger/
-        #/home/zhh/anaconda3/lib/python3.8/site-packages/tensorboard_logger/
 
         tensorboard_logger.clean_default_logger()
         configure(log_pth, flush_secs=10)

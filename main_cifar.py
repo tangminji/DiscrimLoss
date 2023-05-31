@@ -3,8 +3,6 @@
 # Copyright (C) 2019 Apple Inc. All Rights Reserved.
 #
 import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "5,6,7,2,3,4"#"0,1,2"
 
 import time
 import argparse
@@ -23,8 +21,8 @@ from common import utils
 from dataset.cifar100_dataset import CIFAR100WithIdx
 from models.wide_resnet import WideResNet28_10
 
-CURRENT_PATH='/users6/ttwu/script/GoalstepRE/ml-data-parameters-master'
-CIFAR_100_PATH = '/users6/ttwu/script/GoalstepRE/ml-data-parameters-master/dataset'
+CURRENT_PATH=os.getcwd()
+CIFAR_100_PATH = os.path.join(CURRENT_PATH, 'dataset')
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
 parser.add_argument('-j', '--workers', default=32, type=int, metavar='N',

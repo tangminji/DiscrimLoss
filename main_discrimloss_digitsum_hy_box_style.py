@@ -33,7 +33,7 @@ best_acc = 0
 best_mae = 65536
 best_test_mae = 65536
 ITERATION = 0
-# 模型，数据单独配置, model and data
+# model and data
 MD_CLASSES = {
     'DIGITSUM': (get_DIGITSUM_train_val_test_loader, get_DIGITSUM_model_and_loss_criterion)
 }

@@ -336,6 +336,8 @@ def main(params):
         args.n_gpu = 1
     args.device = device
 
+    print('Use device', args.device, flush = True)
+
     utils.generate_log_dir_hyp(args, ITERATION)
     utils.generate_save_dir_hyp(args, ITERATION)
 
@@ -355,7 +357,6 @@ def main(params):
           format(best_acc, params, ITERATION, STATUS_OK))
 
     # Dictionary with information for evaluation, otherwise will report errors
-    # 必须有loss
     run_time = utils.format_time(timer() - start)
     loss =  - best_acc
     return {'loss': loss, 'best_acc': best_acc,

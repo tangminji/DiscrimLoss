@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import MNIST
 
 from common.DiscrimLoss import (DiscrimEA_TANHLoss_newQ, DiscrimEA_EMAK_TANHLoss_newQ, DiscrimEA_GAK_TANHLoss_newQ,
-                                DiscrimEA_EMAK_TANHWO_EALoss_newQ, DiscrimEA_EMAK_TANH_WO_ESLoss_newQ)
+                                DiscrimEA_EMAK_TANHWO_EALoss_newQ, DiscrimEA_EMAK_TANH_WO_ESLoss_newQ,DiscrimEA_EMAK_TANHLoss_FIXK_newQ)
 from common.cmd_args import MNIST_PATH
 from models.lenet import LeNet
 
@@ -64,7 +64,7 @@ class MNISTWithIdx(MNIST):
         corrupt_data = corrupt_data[rand_idx, :, :]
 
         # Adding corrupt and clean data back together
-        return torch.vstack((corrupt_data, clean_data))
+        return torch.cat((corrupt_data, clean_data), dim=0)
 
     def __getitem__(self, index):
         """
@@ -153,6 +153,8 @@ def get_MNIST_model_and_loss_criterion(args, params=None, ITERATION=None):
             criterion = DiscrimEA_EMAK_TANHWO_EALoss_newQ().to(args.device)
         elif args.minist_loss_type == "ea_emak_tanh_wo_es_newq":
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ().to(args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(classes=args.nr_classes).to(args.device)
         elif args.minist_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=0.5).to(args.device)
         elif args.minist_loss_type == "no_cl":
@@ -170,6 +172,9 @@ def get_MNIST_model_and_loss_criterion(args, params=None, ITERATION=None):
         elif args.minist_loss_type == "ea_emak_tanh_wo_es_newq":
             criterion = DiscrimEA_EMAK_TANH_WO_ESLoss_newQ(a=params['tanh_a'], p=params['tanh_p'],
                                                      q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)
+        elif args.cifar_loss_type == "ea_emak_tanh_fixk_newq":
+            criterion = DiscrimEA_EMAK_TANHLoss_FIXK_newQ(a=params['tanh_a'], p=params['tanh_p'],
+                                                           q=params['tanh_q'], sup_eps=params['sup_eps'],classes=args.nr_classes).to(args.device)
         elif args.minist_loss_type == "ea_tanh_newq":
             criterion = DiscrimEA_TANHLoss_newQ(k1=0.5, a=params['tanh_a'], p=params['tanh_p'],
                                                 q=params['tanh_q'], sup_eps=params['sup_eps']).to(args.device)

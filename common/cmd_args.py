@@ -1,6 +1,7 @@
 import argparse
 
 import numpy as np
+import os
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 # Ablation
@@ -27,10 +28,10 @@ parser.add_argument('--utkface_with_params_path', default=None, type=str)
 parser.add_argument('--utkface_loss_type', type=str, default="ea_emak_tanh", choices=["ea_gak_tanh", "ea_emak_tanh"])
 parser.add_argument('--cifar_loss_type', type=str, default="ea_emak_tanh_newq",
                     choices=["ea_gak_tanh_newq", "ea_emak_tanh_newq", "ea_tanh_newq", "no_cl",
-                             "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq"])
+                             "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq","ea_emak_tanh_fixk_newq"])
 parser.add_argument('--minist_loss_type', type=str, default="no_cl",
                     choices=["ea_gak_tanh_newq", "ea_emak_tanh_newq", "ea_tanh_newq", "no_cl",
-                             "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq"])
+                             "ea_emak_tanh_wo_es_newq", "ea_emak_tanh_wo_ea_newq","ea_emak_tanh_fixk_newq"])
 # parser.add_argument('--minist_no_save', default=False, const=True, action='store_const')
 parser.add_argument('--log_dir', type=str)
 parser.add_argument('--save_dir', type=str)
@@ -62,11 +63,12 @@ parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
 parser.add_argument('--lr_inst_param', default=1e-3, type=float, help='Learning rate for instance parameters')  # 0.001
 parser.add_argument('--wd_inst_param', default=1e-6, type=float, help='Weight decay for instance parameters')  # 0.0
 parser.add_argument('--sup_eps', default=3, type=float, help='early suppression epochs')
+parser.add_argument('--es_type', default='linear', type=str, choices=['linear', 'sin', 'exp', 'piecewise'],help='early suppression type')
 parser.add_argument('--a', default=0.2, type=float, help='a*tanh(p*epoch+q)+a+1')
 parser.add_argument('--p', default=1.5, type=float, help='a*tanh(p*epoch+q)+a+1')
 parser.add_argument('--q', default=-50, type=float, help='a*tanh(p*epoch+q)+a+1')
 
-# TODO:不常调整的超参(2个)
+# TODO
 parser.add_argument('--momentum', default=0.9, type=float, metavar='M', help='momentum')
 # L2 penalty
 parser.add_argument('--wd', '--weight-decay', default=5e-4, type=float,
@@ -112,17 +114,16 @@ args = parser.parse_args()
 learning_rate_schedule = np.array([80, 100, 160])  # for CIFAR10/CIFAR100
 # learning_rate_schedule_utkface = np.array([60, 80, 100])  # for UTKFACE,but has been deprecated!
 
-ROOT_PATH = '/users10/mjtang/wtt'
-CURRENT_PATH = '{}/ml-data-parameters-master-20210416'.format(ROOT_PATH)
-CIFAR100_PATH = '{}/ml-data-parameters-master-20210416/dataset'.format(ROOT_PATH)
-CIFAR10_PATH = '{}/ml-data-parameters-master-20210416/dataset'.format(ROOT_PATH)
-MNIST_PATH = '{}/ml-data-parameters-master-20210416/dataset'.format(ROOT_PATH)
-UTKFACE_IMGPATH = '{}/ml-data-parameters-master-20210416/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/'.format(
-    ROOT_PATH)
-UTKFACE_TRAINPATH = '{}/ml-data-parameters-master-20210416/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/train'.format(
-    ROOT_PATH)
-UTKFACE_TESTPATH = '{}/ml-data-parameters-master-20210416/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/test'.format(
-    ROOT_PATH)
+CURRENT_PATH = os.getcwd()
+CIFAR100_PATH = '{}/dataset'.format(CURRENT_PATH)
+CIFAR10_PATH = '{}/dataset'.format(CURRENT_PATH)
+MNIST_PATH = '{}/dataset'.format(CURRENT_PATH)
+UTKFACE_IMGPATH = '{}/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/'.format(
+    CURRENT_PATH)
+UTKFACE_TRAINPATH = '{}/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/train'.format(
+    CURRENT_PATH)
+UTKFACE_TESTPATH = '{}/dataset/UTKface_Aligned_cropped/faces_aligned_cropped/test'.format(
+    CURRENT_PATH)
 
 # used in hyperopt
 # https://blog.csdn.net/qq_34139222/article/details/60322995

@@ -64,7 +64,7 @@ def loss_histogram(log_pth, loss_pth):
                 plt.legend(loc='upper right')
                 plt.xlabel('loss')
                 plt.ylabel('hist density')
-                plt.savefig(os.path.join('/users6/ttwu/script/GoalstepRE/ml-data-parameters-master/myplot/', 'ea_2_{}'.format(epoch)))
+                plt.savefig(os.path.join('./myplot/', 'ea_2_{}'.format(epoch)))
                 plt.show()
 
 def quantile_vars(log_pth, var_pth):
@@ -273,10 +273,10 @@ def save_CIFAR100_imgs():
 
 def show_cifar_img(index):
 
-    lena = mpimg.imread(os.path.join(CIFAR_100_PATH, "cifar-100-pics", 'img{}.png'.format(index)))  # 读取和代码处于同一目录下的 lena.png
+    lena = mpimg.imread(os.path.join(CIFAR_100_PATH, "cifar-100-pics", 'img{}.png'.format(index)))
 
-    plt.imshow(lena)  # 显示图片
-    plt.axis('off')  # 不显示坐标轴
+    plt.imshow(lena)
+    plt.axis('off')
     plt.show()
 
 def clean_hard_noisy_samle(log_pth1, log_pth2):

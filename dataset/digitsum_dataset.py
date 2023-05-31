@@ -15,9 +15,6 @@ from common.DiscrimLoss import (DiscrimEA_TANHLoss, DiscrimEA_EMAK_TANHLoss, Dis
 from common.cmd_args_digitsum import DIGITSUM_PATH
 from models.digitsum_lstm import DigitsumLstm
 
-# 感觉噪声样本未必可复现，而且噪声样本和seed有关......
-# 最好是记录生成好的样本
-
 def get_DIGITSUM_train_val_test_loader(args):
     """"
     Args:
@@ -165,14 +162,12 @@ def get_DIGITSUM_model_and_loss_criterion(args, params=None, ITERATION=None):
     assert args.local_rank == -1
     return model, criterion, criterion_val, logname
 
-# 这里不再修改标签
-
 # def load_dataset(data_path):
 #     print("load data from:\t", data_path)
 #     assert os.path.exists(data_path)
 #     datas = [[int(tt) for tt in t.rstrip().split(" ")] for t in open(data_path, 'r', encoding="utf-8").readlines()]
 
-#     # datas = sorted(datas, key=lambda x: len(x)) #这里实际上没起到作用，而且如果起作用的话还要跟踪下标
+#     # datas = sorted(datas, key=lambda x: len(x))
 #     X = [t[:-1] for t in datas]
 #     Y = [t[-1] for t in datas]
 
@@ -186,11 +181,7 @@ def get_DIGITSUM_model_and_loss_criterion(args, params=None, ITERATION=None):
 #     X = torch.tensor(X, dtype=torch.long)
 #     Y = torch.tensor(Y, dtype=torch.float)
 #     lengths = torch.tensor(lengths, dtype=torch.int64)
-
-#     # 噪声样本已事先生成
-
 #     index_set = torch.tensor(range(X.size(0)), dtype=torch.long)
-#     # 这里由于交换的是Y标签，因此index仍然为0,1,2...
 #     return TensorDataset(X, lengths, index_set, Y)
 
 def load_dataset(data_path, rand_fraction=0., cache_dir=None):
@@ -203,7 +194,7 @@ def load_dataset(data_path, rand_fraction=0., cache_dir=None):
     X = [t[:-1] for t in datas]
     Y = [t[-1] for t in datas]
 
-    oldX = [t[:-1] for t in datas] #拷贝一份
+    oldX = [t[:-1] for t in datas]
 
     lengths = [len(t) for t in X]
     max_len = max(lengths)
@@ -227,7 +218,6 @@ def load_dataset(data_path, rand_fraction=0., cache_dir=None):
                                                               nr_corrupt_instances,
                                                               X.size(0)))
     index_set = torch.tensor(range(X.size(0)), dtype=torch.long)
-    # 这里由于交换的是Y标签，因此index仍然为0,1,2...
 
     if rand_fraction>0 and cache_dir is not None:
         cache_file = os.path.join(cache_dir,f"{rand_fraction:.2f}.txt")

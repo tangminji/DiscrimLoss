@@ -44,7 +44,7 @@ class LeNet(nn.Module):
         self.fc1   = nn.Linear(16*4*4, 120)#(128,1,28,28)
         self.fc2   = nn.Linear(120, 84)
         #self.fc3 = nn.Linear(84, 1)
-        self.fc3   = nn.Linear(84, 10)#设置成回归有问题
+        self.fc3   = nn.Linear(84, 10)
 
     def forward(self, x):
         out = F.relu(self.conv1(x))
