@@ -398,7 +398,7 @@ def main(params):
     config = {}
     # TODO
     config['clamp_inst_sigma'] = {}
-    config['clamp_inst_sigma']['min'] = params['clamp_min']
+    config['clamp_inst_sigma']['min'] = params.get('clamp_min', np.log(0.05))
     config['clamp_inst_sigma']['max'] = np.log(20)
 
     utils.save_config_hyp(args.save_dir, {"args": str(args.__dict__), "config": config, "params": params}, ITERATION)
