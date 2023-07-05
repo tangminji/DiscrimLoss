@@ -1,0 +1,12 @@
+hyperopt==0.2.5
+matplotlib==3.7.1
+numpy==1.19.2
+pandas==2.0.3
+Pillow==10.0.0
+ray==2.5.1
+scipy==1.5.4
+tensorboard_logger==0.1.0
+torch==1.4.0
+torchvision==0.5.0
+tqdm==4.60.0
+transformers==2.4.1
