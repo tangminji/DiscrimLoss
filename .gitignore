@@ -155,6 +155,7 @@ save/
 
 # unused file
 unused/
+deprecated/
 
 # Output file
 CIFAR10/
