@@ -52,5 +52,5 @@ If you find this code useful in your research then please cite:
 
 ```
 Note: Our implementation uses parts of some public codes [1-2]  
-[1] Data Parameters: https://github.com/apple/ml-data-parameters
+[1] Data Parameters: https://github.com/apple/ml-data-parameters  
 [2] SuperLoss: https://github.com/AlanChou/Super-Loss
