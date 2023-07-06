@@ -7,7 +7,7 @@ https://ieeexplore.ieee.org/document/10167857)
 
 ## DiscrimLoss
 
-In this paper, we append a novel loss function DiscrimLoss. Its main effect is to automatically and stably estimate the importance of easy samples and difficult samples (including hard and incorrect samples) at the early stages of training to improve the model performance. Specifically, a model should learn from hard samples to promote generalization rather than overfit to incorrect ones. Then, during the following stages, DiscrimLoss is dedicated to discriminating between hard and incorrect samples to improve the model generalization. Such a training strategy can be formulated dynamically in a self-supervised manner, effectively mimicking the main principle of curriculum learning. Experiments on image classification, image regression, text sequence regression, and event relation reasoning demonstrate the versatility and effectiveness of our method, particularly in the presence of diversified noise levels.
+In this paper, we propose a novel loss function DiscrimLoss. Its main effect is to automatically and stably estimate the importance of easy samples and difficult samples (including hard and incorrect samples) at the early stages of training to improve the model performance. Specifically, a model should learn from hard samples to promote generalization rather than overfit to incorrect ones. Then, during the following stages, DiscrimLoss is dedicated to discriminating between hard and incorrect samples to improve the model generalization. Such a training strategy can be formulated dynamically in a self-supervised manner, effectively mimicking the main principle of curriculum learning. Experiments on image classification, image regression, text sequence regression, and event relation reasoning demonstrate the versatility and effectiveness of our method, particularly in the presence of diversified noise levels.
 
 ## Environments
 You can setup python environment with:
@@ -18,15 +18,16 @@ pip install -r requirements.txt
 ```
 
 ## Data
-We recommand you put add datasets in the `./dataset` folder. Our experiment was conducted on the following datasets:
+We recommand you put add datasets in the `dataset` folder. Our experiment was conducted on the following datasets:
 + MNIST
 + CIFAR10
 + CIFAR100
 + UTKFace
 + DIGITSUM
 + Clothing1M
-+ WikiHow(zhang 2020): https://github.com/zharry29/wikihow-goal-step
++ [WikiHow(zhang 2020)](https://github.com/zharry29/wikihow-goal-step): Please unzip the [official data](https://drive.google.com/file/d/1ufBrqYoHTFoBtSxwYks6i_iR9HqmobxR/view?usp=sharing) under `dataset/wikihow`.
 
+You can 
 
 ## Running
 We provide our params and some shell example in `params` and `examples` folder. You can adjust them according to our paper to reproduct our experiment. Here's a example:
