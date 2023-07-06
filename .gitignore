@@ -156,6 +156,7 @@ save/
 # unused file
 unused/
 deprecated/
+*bak.py
 
 # Output file
 CIFAR10/
