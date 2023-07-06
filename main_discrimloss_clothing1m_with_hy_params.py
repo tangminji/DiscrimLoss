@@ -8,8 +8,8 @@ import json
 from timeit import default_timer as timer
 import os
 
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # "0,1,2,7"#
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # "0,1,2,7"#
 from tqdm import tqdm
 import time
 import argparse

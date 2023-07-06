@@ -6,13 +6,10 @@
 #
 import argparse
 import csv
-import json
 import os
-import re
 import shutil
 import time
 
-import hyperopt
 import numpy as np
 import torch
 import torch.nn.parallel
@@ -23,14 +20,11 @@ from tensorboard_logger import log_value
 from transformers import get_linear_schedule_with_warmup, AdamW
 
 from common import utils
-from common.cmd_args import args
+from common.cmd_args_wikihow import args
 from dataset.wikihow_dataset import get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion
-from timeit import default_timer as timer
 
 best_acc = 0
 best_mae = 65536
-best_test_acc=0
-ITERATION=0
 
 MD_CLASSES = {
     'WIKIHOW': (get_WIKIHOW_train_val_test_loader, get_WIKIHOW_model_and_loss_criterion)
@@ -83,7 +77,28 @@ def validate(args, val_loader, model, criterion, epoch):
 
 
     acc = top1.avg
+    if acc > best_acc:
+        best_acc = acc
+        print('Saving..')
+        model_to_save = model.module if hasattr(model, "module") else model
 
+        model_output_file = args.save_dir + '/epoch_{}/model'.format(epoch)
+        os.makedirs(model_output_file, exist_ok=True)
+        model_to_save.save_pretrained(model_output_file)
+        # os.system("cp %s %s" % (os.path.join(args.roberta_path, "merges.txt"), model_output_file))
+        # os.system("cp %s %s" % (os.path.join(args.roberta_path, "vocab.json"), model_output_file))
+        for last_e in range(epoch):
+            last_e_path = args.save_dir + '/epoch_{}/model'.format(last_e)
+            if os.path.exists(last_e_path):
+                shutil.rmtree(last_e_path, ignore_errors=True)
+
+    state = {
+        'acc': acc,
+        'epoch': epoch,
+        'rng_state': torch.get_rng_state()
+    }
+    os.makedirs(args.save_dir + '/epoch_{}'.format(epoch),exist_ok=True)
+    torch.save(obj=state, f=args.save_dir + '/epoch_{}/state'.format(epoch))
     return losses.avg, top1.avg
 
 
@@ -141,8 +156,6 @@ def train_for_one_epoch(args,
                         optimizer_data_parameters,
                         data_parameters,
                         config,
-                        params=None,
-                        ITERATION=None,
                         scheduler=None,
                         switch=False):
     """Train model for one epoch on the train set.
@@ -222,8 +235,8 @@ def train_for_one_epoch(args,
         loss = loss.mean()
 
         # Apply weight decay on data parameters
-        if params["wd_inst_param"] > 0.0:
-            loss = loss + 0.5 * params["wd_inst_param"] * (inst_parameter_minibatch ** 2).sum()  # 2,4
+        if args.wd_inst_param > 0.0:
+            loss = loss + 0.5 * args.wd_inst_param * (inst_parameter_minibatch ** 2).sum()  # 2,4
 
         # Compute gradient and do SGD step
         loss.backward()
@@ -247,12 +260,13 @@ def train_for_one_epoch(args,
 
         # Log stats for data parameters and loss every few iterations
         if i % args.print_freq == 0:
+
             utils.log_discrim_cl_intermediate_iteration_stats(epoch,
                                                               global_iter,
                                                               losses,
                                                               inst_parameters=inst_parameters,
                                                               top1=top1)
-    
+
     # Print and log stats for the epoch
     print('Time for epoch: {}'.format(time.time() - start_epoch_time))
     log_value('train/loss', losses.avg, step=epoch)
@@ -260,8 +274,8 @@ def train_for_one_epoch(args,
     print('Train-Epoch-{}: Acc:{}, Loss:{}'.format(epoch, top1.avg, losses.avg))
     log_value('train/accuracy', top1.avg, step=epoch)
 
-    utils.save_loss_hyp(args.save_dir, loss_parameters, epoch, ITERATION)
-    utils.save_sigma_hyp(args.save_dir, inst_parameters, epoch, ITERATION)
+    utils.save_loss(args.save_dir, loss_parameters, epoch)
+    utils.save_sigma(args.save_dir, inst_parameters, epoch)
 
     train_metric = top1.avg
     return global_iter, losses.avg, train_metric, is_train_loader_iter_empty  # top1.avg
@@ -275,17 +289,11 @@ def main_worker(args, config):
     """
     global best_acc
     global best_mae
-    global best_test_acc
-    best_acc = 0
-    best_mae = 65536
-    best_test_acc = 0
-
-
     global_iter = 0
     # learning_rate_schedule = np.array([80, 100, 160])
     loaders, mdl_loss = MD_CLASSES[args.dataset]
     # Create model
-    model, loss_criterion, loss_criterion_val, logname = mdl_loss(args,params, ITERATION)
+    model, loss_criterion, loss_criterion_val, logname = mdl_loss(args)
 
     # Define optimizer
 
@@ -299,7 +307,6 @@ def main_worker(args, config):
     (inst_parameters, optimizer_inst_param, exp_avg) = utils.get_inst_conf_n_optimizer(
         args=args,
         nr_instances=len(train_loader.dataset),
-        params=params,
         device='cuda')
 
     # Training loop
@@ -315,6 +322,7 @@ def main_worker(args, config):
         num_training_steps=len(train_loader) * args.num_train_epochs
     )
     epoch = -1
+    best_test = -1
     for num_train_e in range(args.start_epoch, args.num_train_epochs):
         train_loader_iter = iter(train_loader)
         is_train_loader_iter_empty = False
@@ -334,38 +342,15 @@ def main_worker(args, config):
                 data_parameters=(inst_parameters, exp_avg),
                 config=config,
                 scheduler=scheduler,
-                params=params,
-                ITERATION=ITERATION,
                 switch=False)
 
             # Evaluate on validation set
             val_loss, val_metric = validate(args, val_loader, model, loss_criterion_val, epoch)
             # Evaluate on test set
             test_loss, test_metric = test(args, test_loader, model, loss_criterion_val, epoch)
-            if val_metric > best_acc:
-                best_acc = val_metric
-                best_test_acc=test_metric
-                print('Saving..')
-                model_to_save = model.module if hasattr(model, "module") else model
 
-                model_output_file = args.save_dir + '/epoch_{}/model'.format(epoch)
-                os.makedirs(model_output_file, exist_ok=True)
-                model_to_save.save_pretrained(model_output_file)
-                os.system("cp %s %s" % (os.path.join(args.model_path, "merges.txt"), model_output_file))
-                os.system("cp %s %s" % (os.path.join(args.model_path, "vocab.json"), model_output_file))
-                for last_e in range(epoch):
-                    last_e_path = args.save_dir + '/epoch_{}/model'.format(last_e)
-                    if os.path.exists(last_e_path):
-                        shutil.rmtree(last_e_path, ignore_errors=True)
-
-            state = {
-                'acc': val_metric,
-                'epoch': epoch,
-                'rng_state': torch.get_rng_state()
-            }
-            os.makedirs(args.save_dir + '/epoch_{}'.format(epoch), exist_ok=True)
-            torch.save(obj=state, f=args.save_dir + '/epoch_{}/state'.format(epoch))
-
+            if val_metric == best_acc:
+                best_test = test_metric
 
             # log model metrics
             with open(logname, 'a') as logfile:
@@ -380,44 +365,46 @@ def main_worker(args, config):
     # record best_acc/best_mae
     with open(logname, 'a') as logfile:
         logwriter = csv.writer(logfile, delimiter=',')
-        logwriter.writerow([-1, -1, -1, -1, best_acc, -1, best_test_acc])
+        logwriter.writerow([-1, -1, -1, -1, best_acc, -1, best_test])
 
     print('total time: {}'.format(time.time() - start_epoch_time))
-    return best_test_acc
-def main(params):
-    global ITERATION
-    ITERATION += 1
-    start = timer()
+
+
+def main():
     device = torch.device("cuda" if torch.cuda.is_available() and not args.no_cuda else "cpu")
     args.n_gpu = torch.cuda.device_count()
     args.device = device
 
-    utils.generate_log_dir_hyp(args, ITERATION)
-    utils.generate_save_dir_hyp(args, ITERATION)
+    utils.generate_log_dir(args)
+    utils.generate_save_dir(args)
 
     config = {}
     # TODO
     config['clamp_inst_sigma'] = {}
-    config['clamp_inst_sigma']['min'] = params.get('clamp_min', np.log(0.05))
+    config['clamp_inst_sigma']['min'] = np.log(0.05)  # 1/20,0.5,0.6,0.4,0.3,0.2,0.1
     config['clamp_inst_sigma']['max'] = np.log(20)
 
-    utils.save_config_hyp(args.save_dir, {"args": str(args.__dict__), "config": config, "params": params}, ITERATION)
+    utils.save_config(args.save_dir, {"args": str(args.__dict__), "config": config})
 
     # Set seed for reproducibility
     utils.set_seed(args)
     # Simply call main_worker function
-    best_acc = main_worker(args, config, params, ITERATION)
-    print('best acc: {}, params: {}, iteration: {}, status: {}'.
-          format(best_acc, params, ITERATION, hyperopt.STATUS_OK))
-
-    run_time = utils.format_time(timer() - start)
-    return {'loss': -best_acc, 'best_acc': best_acc,
-            'params': params, 'iteration': ITERATION,
-            'train_time': run_time, 'status': hyperopt.STATUS_OK}
+    main_worker(args, config)
 
 
 if __name__ == '__main__':
-    print("load params from : ", args.wikihow_with_params_path)
-    params = json.load(open(args.wikihow_with_params_path, 'r', encoding="utf-8"))['best']
-    assert params is not None
-    main(params=params)
+    main()
+'''
+python main_cifar_parallel.py --rand_fraction 0.4 --init_inst_param 1.0 --lr_inst_param 0.2 --wd_inst_param 0.0 --learn_inst_parameters 
+'''
+'''
+python main_cifar_parallel.py --init_class_param 1.0 --lr_class_param 0.1 --wd_class_param 1e-4 --learn_class_parameters
+'''
+'''
+nohup python main_cifar_parallel.py --init_class_param 1.0 --lr_class_param 0.1 --wd_class_param 1e-4 --init_inst_param 0.001 --lr_inst_param 0.8 --wd_inst_param 1e-8 --learn_class_parameters --learn_inst_parameters >> ./datapara_results/log_class_inst_no_noise.log 2>&1 &
+
+nohup python main_cifar_parallel.py --init_class_param 1.0 --lr_class_param 0.1 --wd_class_param 1e-4 --init_inst_param 0.001 --lr_inst_param 0.8 --wd_inst_param 1e-8 --learn_class_parameters --learn_inst_parameters >> ./CIFAR100/datapara_results/log_n40_bt128.log 2>&1 &
+
+nohup python main_discrimloss.py --wd_inst_param 1e-6 >> ./CIFAR100/discrimloss_results/log_n0_bt128_cn1_ea_tanh_wd6.log 2>&1 &
+
+'''

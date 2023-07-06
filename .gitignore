@@ -136,6 +136,7 @@ dmypy.json
 # Shells
 *.sh
 *.sbatch
+!/examples/*.sh
 
 # Files
 *.out
@@ -159,12 +160,13 @@ deprecated/
 *bak.py
 
 # Output file
-CIFAR10/
-CIFAR100/
-MNIST/
-DIGITSUM/
-UTKFACE/
-WIKIHOW/
+/CIFAR10/
+/CIFAR100/
+/MNIST/
+/DIGITSUM/
+/UTKFACE/
+/WIKIHOW/
+/Clothing1m/
 
 # data
 dataset/cifar-10-batches-py/

@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 from hyperopt import hp
+import os
 
 parser = argparse.ArgumentParser(description='PyTorch Training')
 parser.add_argument('--clothing1m_subp_script', default=None, type=str)
@@ -81,9 +82,8 @@ parser.add_argument('--init_inst_param', default=1.0, type=float, help='Initial 
 
 args = parser.parse_args()
 
-ROOT_PATH = '/users5/jlgao/for_wtt'
-CURRENT_PATH = '{}/ml-data-parameters-master-20210416'.format(ROOT_PATH)
-Clothing1M_PATH = '/users6/ttwu/script/dataset/Clothing_1M/'
+CURRENT_PATH = os.getcwd()
+Clothing1M_PATH = os.path.join(CURRENT_PATH,'dataset/Clothing_1M/')
 
 # used in hyperopt
 # https://blog.csdn.net/qq_34139222/article/details/60322995
